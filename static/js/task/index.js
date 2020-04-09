@@ -502,7 +502,7 @@ $(document).ready(() => {
                         `
                     });
                     setTimeout(() => {
-                        $(".instructionsnav").show();
+                        $(".startexperiment").show();
                     }, 15000)
                 }
             }
