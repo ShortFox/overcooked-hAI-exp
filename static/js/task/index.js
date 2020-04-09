@@ -220,19 +220,6 @@ $(document).ready(() => {
                             The current order list, score, and time left for you and your partner
                             are shown in the upper left.
                             </p>
-
-                            <br>
-                            <hr>
-                            <br>
-
-                            <h3>Final Instructions</h3>
-                            <p>
-                            Next, we will give you a couple of simple collaborative training rounds with a computer partner.
-                            </p>
-                            <p>Afterwards, in the main part of this task, you will be paired up with a computer partner on harder layouts, 
-                            and you must collaborate with them to play the game.</p>
-                            <br>
-                            <p>Good luck!</p>
                             </div>
                         `
                     });
@@ -241,8 +228,32 @@ $(document).ready(() => {
                     }, 15000)
                 }
             },
+			
+			// Practice 1 Prompt
+			{
+                pagename: 'exp/pageblock.html',
+                pagefunc: () => {
+                    $("#pageblock").addClass("center");
+                    $("#pageblock").css("width", "500px");
+                    let survey = new PageBlockSurveyHandler({containername: "pageblock"});
+                    survey.addone({
+                        type: 'textdisplay',
+                        questiontext: `
+                            <div>
+                            <h2>Instructions</h2>
+                            <p>First, you will practice using the keyboard controls.
+							Make as many onion soups as possible. A computer player will also be visible to demonstrate
+							how to make and serve the soup.</p>
+                            </div>
+                        `
+                    });
+					setTimeout(() => {
+                        $("#next").click()
+                    }, 3000);
+                }
+            },
 
-            // Training
+            // Training Part 1
             {
                 'pagename': 'exp/pageblock.html',
                 'pagefunc': function() {
@@ -324,10 +335,9 @@ $(document).ready(() => {
                         "GGGGGGG",
                         "XXXXXXX",
                     ];
-
                     let game = new OvercookedSinglePlayerTask({
                         container_id: "pageblock",
-			player_index: 0,
+						player_index: 0,
                         start_grid : start_grid,
                         npc_policies: {1: npc_policy},
                         TIMESTEP : EXP.TIMESTEP_LENGTH,
@@ -353,7 +363,8 @@ $(document).ready(() => {
                     game.init();
                 }
             },
-
+			
+			// Practice 2 Prompt
             {
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
@@ -367,13 +378,18 @@ $(document).ready(() => {
                         questiontext: `
                             <div>
                             <h2>Instructions</h2>
-                            <p>Next, you will cook soups and bring them to your partner
-                            who will bring them to be served.</p>
+                            <p>Next, you will practice interacting with a computer partner.</p>
+							<p>Make as many onion soups as possible. Pass each bowl to your partner on the shared counter, who will bring them to be served.</p>
                             </div>
                         `
                     });
+					setTimeout(() => {
+                        $("#next").click()
+                    }, 3000);
                 }
             },
+			
+			// Training Part 2
             {
                 'pagename': 'exp/pageblock.html',
                 'pagefunc': function() {
@@ -403,7 +419,6 @@ $(document).ready(() => {
                             return a
                         }
                     })();
-
                     let start_grid = [
                         "XXXXXXX",
                         "GPDGGGG",
@@ -411,14 +426,13 @@ $(document).ready(() => {
                         "GGGGGGG",
                         "XXXXXXX"
                     ];
-
                     let game = new OvercookedSinglePlayerTask({
                         container_id: "pageblock",
-			player_index: 0,
+						player_index: 0,
                         start_grid : start_grid,
                         npc_policies: {1: npc_policy},
                         TIMESTEP : EXP.TIMESTEP_LENGTH,
-                        MAX_TIME : 40, //seconds
+                        MAX_TIME : 60, //seconds
                         init_orders: ['onion'],
                         always_serve: 'onion',
                         completion_callback: () => {
@@ -441,6 +455,8 @@ $(document).ready(() => {
                     game.init();
                 }
             },
+			
+			// Training Completion Prompt
             {
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
@@ -452,11 +468,42 @@ $(document).ready(() => {
                         questiontext: `
                             <div>
                             <h2>Instructions</h2>
-                            <p>Great! Now you will be paired up with another
-                            computer partner for a set of five harder layouts.</p>
+                            <p>You have now completed training.</p>
+							
+							<p>You will now work with another participant from Macquarie University to complete the cooking task.</p>
+							
+							<p>You will work with the same person for five attempts. After the fifth attempt, you will change to another partner and complete five more attempts.</p>
+							
+							<p>For all attempts, work with your partners to serve as many onion soups as possible. After completing all ten attempts, you will answer a series of questions about your experience.</p>
                             </div>
                         `
                     });
+					setTimeout(() => {
+                        $("#next").click()
+                    }, 3000);
+                }
+            },
+			
+			// Waiting for Partner Prompt
+            {
+                pagename: 'exp/pageblock.html',
+                pagefunc: () => {
+                    $("#pageblock").addClass("center");
+                    $("#pageblock").css("width", "500px");
+                    let survey = new PageBlockSurveyHandler({containername: "pageblock"});
+                    survey.addone({
+                        type: 'textdisplay',
+                        questiontext: `
+                            <div>
+                            <h2>Please wait</h2>
+							<p>Please wait for your partner to reach this point.</p>
+							<p>Once the button appears, that means both participants are ready. Click to start experiment.</p>
+                            </div>
+                        `
+                    });
+					setTimeout(() => {
+                        $("#next").click()
+                    }, 15000);
                 }
             }
         ];
@@ -728,7 +775,7 @@ $(document).ready(() => {
 
         let exp_pages =
             _.flattenDeep([pre_task_pages, task_pages, post_task_pages])
-        instructions = new PageBlockController(
+			instructions = new PageBlockController(
             psiTurk, //parent
             exp_pages, //pages
             undefined, //callback
