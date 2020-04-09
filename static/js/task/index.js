@@ -35,7 +35,7 @@ let is_leader;
 
 
 let layouts = {
-    "random3":[
+    "test":[
         "GGGPPGGG",
         "G      G",
         "D XXXX S",
@@ -56,7 +56,7 @@ let layouts = {
         "O   X",
         "XOSXX"
     ],
-    "random1":[
+    "random3":[
         "XXXPPXXX",
         "X      X",
         "D XXXX S",
@@ -247,9 +247,9 @@ $(document).ready(() => {
                             </div>
                         `
                     });
-					setTimeout(() => {
-                        $("#next").click()
-                    }, 3000);
+                    setTimeout(() => {
+                        $(".instructionsnav").show();
+                    }, 3000)
                 }
             },
 
@@ -383,9 +383,9 @@ $(document).ready(() => {
                             </div>
                         `
                     });
-					setTimeout(() => {
-                        $("#next").click()
-                    }, 3000);
+                    setTimeout(() => {
+                        $(".instructionsnav").show();
+                    }, 3000)
                 }
             },
 			
@@ -478,9 +478,9 @@ $(document).ready(() => {
                             </div>
                         `
                     });
-					setTimeout(() => {
-                        $("#next").click()
-                    }, 3000);
+                    setTimeout(() => {
+                        $(".instructionsnav").show();
+                    }, 3000)
                 }
             },
 			
@@ -501,9 +501,9 @@ $(document).ready(() => {
                             </div>
                         `
                     });
-					setTimeout(() => {
-                        $("#next").click()
-                    }, 15000);
+                    setTimeout(() => {
+                        $(".instructionsnav").show();
+                    }, 15000)
                 }
             }
         ];
