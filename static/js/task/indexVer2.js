@@ -18,8 +18,8 @@ var randomstring = require("randomstring");
 
 //experimental variables
 let EXP = {
-    MAIN_TRIAL_TIME: 60, //seconds
-    TIMESTEP_LENGTH: 150, //milliseconds
+    MAIN_TRIAL_TIME: 5, //seconds. Real experiment do 240
+    TIMESTEP_LENGTH: 240, //milliseconds
     DELIVERY_POINTS: 5,
     POINT_VALUE: .01,
     BASE_PAY: 1.00,
@@ -35,44 +35,18 @@ let is_leader;
 
 
 let layouts = {
-    "random3":[
+    "counter_circuit":[
         "GGGPPGGG",
         "G      G",
         "D XXXX S",
         "G2    1G",
-        "GGGOOGGG",
-    ],
-    "asymmetric_advantages":[
-        "XXXXXXXXX",
-        "O XSXOX S",
-        "X   P 1 X",
-        "X2  P   X",
-        "XXXDXDXXX"
-    ],
-    "coordination_ring":[
-        "XXXPX",
-        "X 1 P",
-        "D2X X",
-        "O   X",
-        "XOSXX"
-    ],
-    "random1":[
-        "XXXPPXXX",
-        "X      X",
-        "D XXXX S",
-        "X2    1X",
-        "XXXOOXXX"
-    ],
-    "random0": [
-        "XXXPX",
-        "O X1P",
-        "O2X X",
-        "D X X",
-        "XXXSX"
+        "GGGOOGGG"
     ]
 };
+
+//10 trials
 let main_trial_order =
-    ["random3", "random3", "random3", "random3", "random3"];
+    ["counter_circuit", "counter_circuit", "counter_circuit", "counter_circuit", "counter_circuit","counter_circuit", "counter_circuit", "counter_circuit", "counter_circuit", "counter_circuit"];
 
 $(document).ready(() => {
     /*
@@ -88,7 +62,18 @@ $(document).ready(() => {
     var condition_name = Conditions.condition_names[condition];
     console.log("Condition: " + condition_name);
     EXP.PLAYER_INDEX = Number(condition_name.split('-')[1]);
-    EXP.MODEL_TYPE = condition_name.split('-')[0];
+
+    //Define Block 1 and 2 models
+    var block1_model = condition_name.split('-')[0];
+    var block2_model = '';
+
+    if (block1_model == 'ppo_bc'){
+        block2_model = 'ppo_sp';
+    }
+    else{
+        block2_model = 'ppo_bc';
+    }
+    EXP.MODEL_TYPE = block1_model;
 
     let AGENT_INDEX = 1 - EXP.PLAYER_INDEX;
 
@@ -317,12 +302,11 @@ $(document).ready(() => {
                     })();
                     let start_grid = [
                         "XXXXXXX",
-                        "GPGOGDG",
-                        "G2    S",
-                        "GPGOGDG",
-                        "G    1S",
-                        "GGGGGGG",
-                        "XXXXXXX",
+                        "XPXOXDX",
+                        "X2    S",
+                        "XPXOXDX",
+                        "X    1S",
+                        "XXXXXXX"
                     ];
 
                     let game = new OvercookedSinglePlayerTask({
@@ -340,6 +324,7 @@ $(document).ready(() => {
                         },
                         timestep_callback: (data) => {
                             data.participant_id = participant_id;
+                            data.model_type = 'preprogrammed';
                             data.layout_name = "training0";
                             data.layout = start_grid;
                             data.round_num = 0;
@@ -360,7 +345,7 @@ $(document).ready(() => {
                     $("#pageblock").addClass("center");
                     $("#pageblock").css("width", "500px");
                     psiTurk.recordUnstructuredData('PLAYER_INDEX', EXP.PLAYER_INDEX);
-                    psiTurk.recordUnstructuredData('MODEL_TYPE', EXP.MODEL_TYPE);
+                    psiTurk.recordUnstructuredData('MODEL_TYPE_FIRST', EXP.MODEL_TYPE);
                     let survey = new PageBlockSurveyHandler({containername: "pageblock"});
                     survey.addone({
                         type: 'textdisplay',
@@ -406,9 +391,8 @@ $(document).ready(() => {
 
                     let start_grid = [
                         "XXXXXXX",
-                        "GPDGGGG",
+                        "XPDXXXX",
                         "O1 X2 S",
-                        "GGGGGGG",
                         "XXXXXXX"
                     ];
 
@@ -429,6 +413,7 @@ $(document).ready(() => {
                         },
                         timestep_callback: (data) => {
                             data.participant_id = participant_id;
+                            data.model_type = 'preprogrammed';
                             data.layout_name = "training2";
                             data.layout = start_grid;
                             data.round_num = 0;
@@ -466,6 +451,12 @@ $(document).ready(() => {
          *********/
         var task_pages = _.map(_.range(main_trial_order.length), (round_num) => {
 
+            //Check if block 2 has passed
+            if (round_num+1 >5){
+                EXP.MODEL_TYPE = block2_model;
+            }
+
+
             let round_page = {
                 'pagename': 'exp/pageblock.html',
                 'pagefunc': () => {
@@ -501,6 +492,7 @@ $(document).ready(() => {
                             },
                             timestep_callback: (data) => {
                                 data.participant_id = participant_id;
+                                data.model_type = EXP.MODEL_TYPE;
                                 data.layout_name = layout_name;
                                 data.layout = layouts[layout_name];
                                 data.round_num = round_num;
@@ -533,7 +525,7 @@ $(document).ready(() => {
             }
             return [round_page, game_page]
         });
-        task_pages = _.flattenDeep(task_pages);
+        task_pages_ = _.flattenDeep(task_pages);
 
         /*********
          Post-task
