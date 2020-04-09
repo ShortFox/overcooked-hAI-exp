@@ -233,6 +233,7 @@ $(document).ready(() => {
 			{
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
+					$(".instructionsnav").hide();
                     $("#pageblock").addClass("center");
                     $("#pageblock").css("width", "500px");
                     let survey = new PageBlockSurveyHandler({containername: "pageblock"});
@@ -368,6 +369,7 @@ $(document).ready(() => {
             {
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
+					$(".instructionsnav").hide();
                     $("#pageblock").addClass("center");
                     $("#pageblock").css("width", "500px");
                     psiTurk.recordUnstructuredData('PLAYER_INDEX', EXP.PLAYER_INDEX);
@@ -460,6 +462,7 @@ $(document).ready(() => {
             {
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
+					$(".instructionsnav").hide();
                     $("#pageblock").addClass("center");
                     $("#pageblock").css("width", "500px");
                     let survey = new PageBlockSurveyHandler({containername: "pageblock"});
@@ -488,6 +491,7 @@ $(document).ready(() => {
             {
                 pagename: 'exp/pageblock.html',
                 pagefunc: () => {
+					$(".instructionsnav").hide();
                     $("#pageblock").addClass("center");
                     $("#pageblock").css("width", "500px");
                     let survey = new PageBlockSurveyHandler({containername: "pageblock"});
@@ -502,7 +506,7 @@ $(document).ready(() => {
                         `
                     });
                     setTimeout(() => {
-                        $(".startexperiment").show();
+                        $(".instructionsnav").show();
                     }, 15000)
                 }
             }
